@@ -38,6 +38,9 @@ def file_load(file):
             a.head.inList.append(a)
             a.tail.outList.append(a)
 
+        my_graph.s=my_graph.nodeList[0]
+        my_graph.t=my_graph.nodeList[-1]
+
         my_graph.number()
 
     except Exception as exc:
@@ -47,7 +50,40 @@ def file_load(file):
 
 
 def dijkstra(g):
+    my_list = g.nodeList
+    for n in my_list:
+        n.d = math.inf
+    s = g.s
+    s.d = 0
+    while my_list.__len__() > 0:
+        minor = math.inf
+        for i in my_list:
+            if i.d < minor:
+                n = i
+                minor = i.d
+        my_list.remove(n)
+        for a in n.outList:
+            dist = a.tail.d + a.cost
+            if a.head.d > dist:
+                a.head.d = dist
+                a.head.predecessor = a.tail
+    return g
+
+
+def print_result(g):
+    n=g.t
+    cost=n.d
+    path=[]
+    while n != g.s:
+        path.append(n)
+        n=n.predecessor
+    path.append(n)
+    path.reverse()
+
+    print("Solution nodes = ", path)
+    print("Total cost = ",cost)
     pass
+
 
 class App(tk.Frame):
     def __init__(self, master=None):
@@ -75,8 +111,9 @@ if len(app.filename) > 0:
 else:
     graph = Graph()
 
-dijkstra(dcp(graph))
+g = dijkstra(dcp(graph))
+print_result(g)
 
-print(graph.arcList,graph.nodeList,sep="\n")
+# print(graph.arcList, graph.nodeList, sep="\n")
 
 # app.mainloop()

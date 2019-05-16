@@ -9,7 +9,7 @@ class Node:
         self.d = math.inf
         self.inList: List[Arc] = []
         self.outList: List[Arc] = []
-        self.pre = None
+        self.predecessor = None
         self.num: int = None
 
     def __str__(self):
@@ -35,10 +35,12 @@ class Arc:
 
 
 class Graph:
-    nodeList: List[Node] = []
-    arcList: List[Arc] = []
-    s: Node = None
-    t: Node = None
+
+    def __init__(self):
+        self.nodeList: List[Node] = []
+        self.arcList: List[Arc] = []
+        self.s: Node = None
+        self.t: Node = None
 
     def number(self):
         i=1
