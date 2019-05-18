@@ -43,6 +43,8 @@ class Graph:
         self.s: Node = None
         self.t: Node = None
         self.negative = False
+        self.C=-math.inf
+        self.nodes_number=0
 
     def number(self):
         i=1
@@ -50,7 +52,15 @@ class Graph:
             n.num=i
             i+=1
 
+    def initialize(self):
+        for n in self.nodeList:
+            n.d = math.inf
+        self.s.d = 0
+
     def negative_cost_detector(self):
+        self.nodes_number = len(self.nodeList)
+        print(self.nodes_number)
         for a in self.arcList:
+            self.C=max(self.C,a.cost)
             if a.cost < 0:
                 self.negative=True
