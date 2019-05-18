@@ -27,6 +27,7 @@ class Arc:
         self.head = head
         self.tail = tail
 
+
     def __str__(self):
         return self.tail.__str__()+" -> "+self.head.__str__()
 
@@ -41,9 +42,15 @@ class Graph:
         self.arcList: List[Arc] = []
         self.s: Node = None
         self.t: Node = None
+        self.negative = False
 
     def number(self):
         i=1
         for n in self.nodeList:
             n.num=i
             i+=1
+
+    def negative_cost_detector(self):
+        for a in self.arcList:
+            if a.cost < 0:
+                self.negative=True
