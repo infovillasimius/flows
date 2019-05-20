@@ -11,6 +11,7 @@ class Node:
         self.outList: List[Arc] = []
         self.predecessor = None
         self.num: int = None
+        self.labeled = False
 
     def __str__(self):
         return self.num.__str__()
@@ -27,9 +28,8 @@ class Arc:
         self.head = head
         self.tail = tail
 
-
     def __str__(self):
-        return self.tail.__str__()+" -> "+self.head.__str__()
+        return self.tail.__str__() + " -> " + self.head.__str__()
 
     def __repr__(self):
         return self.tail.__str__() + " -> " + self.head.__str__()
@@ -43,24 +43,26 @@ class Graph:
         self.s: Node = None
         self.t: Node = None
         self.negative = False
-        self.C=-math.inf
-        self.nodes_number=0
+        self.C = -math.inf
+        self.nodes_number = 0
+        self.exec_time = 0.0
 
     def number(self):
-        i=1
+        i = 1
         for n in self.nodeList:
-            n.num=i
-            i+=1
+            n.num = i
+            i += 1
 
     def initialize(self):
         for n in self.nodeList:
             n.d = math.inf
+            n.labeled=False
         self.s.d = 0
 
     def negative_cost_detector(self):
         self.nodes_number = len(self.nodeList)
-        print(self.nodes_number)
+
         for a in self.arcList:
-            self.C=max(self.C,a.cost)
+            self.C = max(self.C, a.cost)
             if a.cost < 0:
-                self.negative=True
+                self.negative = True
