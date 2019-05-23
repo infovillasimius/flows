@@ -47,7 +47,7 @@ def file_load(file):
     return my_graph
 
 
-def print_result(g,algo):
+def print_result(g, algo):
     n = g.t
     cost = n.d
     path = []
@@ -56,5 +56,5 @@ def print_result(g,algo):
         n = n.predecessor
     path.append(n)
     path.reverse()
-    result=algo+" Algorithm\nExecution time (milliseconds) = "+str(g.exec_time*1000)+"\n"+"Solution nodes = "+str(path)+"\n"+"Total cost = "+str(cost)+"\n"
+    result = algo + " Algorithm\nSolution nodes = " + str(path) + "\n" + "Total cost = " + str(cost) + "\n"
     return result
