@@ -7,7 +7,7 @@ def dynamic(g):
     if not g.is_ordered:
         return g
     start_time = timer()
-    for n in g.nodeList:
+    for n in g.node_list:
         for a in n.outList:
             dist = a.tail.d + a.cost
             if a.head.d > dist:
@@ -21,7 +21,7 @@ def dijkstra(g):
     if g.negative:
         return g
     g.initialize()
-    my_list = g.nodeList
+    my_list = g.node_list
     start_time = timer()
     while my_list.__len__() > 0:
         minor = math.inf
@@ -42,7 +42,7 @@ def dijkstra(g):
 def dial_dijkstra(g):
     if g.negative:
         return g
-    my_list = g.nodeList
+    my_list = g.node_list
     g.initialize()
     q = CircularQueue(g.C + 1)
     q.store(g.s)
@@ -65,7 +65,7 @@ def dial_dijkstra(g):
 def radix_heap_dijkstra(g):
     if g.negative:
         return g
-    my_list = g.nodeList
+    my_list = g.node_list
     g.initialize()
     q = RadixHeap(g.nodes_number * g.C)
     q.store(g.s)
@@ -98,7 +98,7 @@ def label_correcting(g):
 
     while not opt_cond:
         opt_cond = True
-        for a in g.arcList:
+        for a in g.arc_list:
             dist = a.tail.d + a.cost
             if a.head.d > dist:
                 a.head.d = dist

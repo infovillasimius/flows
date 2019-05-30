@@ -2,6 +2,7 @@ import tkinter as tk
 from copy import deepcopy as dcp
 from tkinter import filedialog
 from spp_algorithms import *
+from max_flow_algorithms import *
 from utility import *
 
 
@@ -12,9 +13,9 @@ class App(tk.Frame):
         self.grid(sticky=tk.N + tk.S + tk.E + tk.W)
         self.graph = None
         self.min_x = 400
-        self.min_y = 200
+        self.min_y = 400
         self.max_x = 800
-        self.max_y = 400
+        self.max_y = 500
         self.create_widgets()
 
     def create_widgets(self):
@@ -26,14 +27,15 @@ class App(tk.Frame):
         self.rowconfigure(2, weight=1)
         self.columnconfigure(0, weight=1)
         self.loadButton = tk.Button(self, text='Load a graph from file', command=self.load)
-        self.loadButton.grid(row=0, column=0, sticky=tk.N + tk.S + tk.E + tk.W)
-        self.dijkstraButton = tk.Button(self, text='Dynamic', command=self.exec_dynamic)
-        self.dijkstraButton.grid(row=0, column=1, sticky=tk.N + tk.S + tk.E + tk.W)
+        self.loadButton.grid(row=0, column=0, sticky=tk.N + tk.S + tk.E + tk.W, rowspan=2)
+        self.dynamicButton = tk.Button(self, text='Dynamic', command=self.exec_dynamic)
+        self.dynamicButton.grid(row=0, column=1, sticky=tk.N + tk.S + tk.E + tk.W)
         self.dijkstraButton = tk.Button(self, text='Dijkstra', command=self.exec_dijkstra)
         self.dijkstraButton.grid(row=0, column=2, sticky=tk.N + tk.S + tk.E + tk.W)
         self.dial_dijkstraButton = tk.Button(self, text='Dial Dijkstra', command=self.exec_dial_dijkstra)
         self.dial_dijkstraButton.grid(row=0, column=3, sticky=tk.N + tk.S + tk.E + tk.W)
-        self.radix_heap_dijkstraButton = tk.Button(self, text='Radix Heap Dijkstra', command=self.exec_radix_heap_dijkstra)
+        self.radix_heap_dijkstraButton = tk.Button(self, text='Radix Heap Dijkstra',
+                                                   command=self.exec_radix_heap_dijkstra)
         self.radix_heap_dijkstraButton.grid(row=0, column=4, sticky=tk.N + tk.S + tk.E + tk.W)
         self.label_correctingButton = tk.Button(self, text='Label Correcting', command=self.exec_label_correcting)
         self.label_correctingButton.grid(row=0, column=5, sticky=tk.N + tk.S + tk.E + tk.W)
@@ -41,18 +43,19 @@ class App(tk.Frame):
                                                      command=self.exec_fifo_label_correcting)
         self.fifo_label_correctingButton.grid(row=0, column=6, sticky=tk.N + tk.S + tk.E + tk.W)
         self.deque_label_correctingButton = tk.Button(self, text='Deque L.C.',
-                                                     command=self.exec_fifo_label_correcting)
+                                                      command=self.exec_fifo_label_correcting)
         self.deque_label_correctingButton.grid(row=0, column=7, sticky=tk.N + tk.S + tk.E + tk.W)
         self.quitButton = tk.Button(self, text='Quit', command=self.quit)
         self.quitButton.grid(row=0, column=8, sticky=tk.N + tk.S + tk.E + tk.W)
         self.resultText = tk.Text(self)  # , width=40, height=10)
-        self.resultText.grid(row=2, column=0, sticky=tk.N + tk.S + tk.E + tk.W, columnspan=9)
-        self.entry_label=tk.Label(self, text='Number of test cycles')
-        self.entry_label.grid(row=3, column=0)
-        self.entry=tk.Entry(self, justify=tk.CENTER)
-
-        self.entry.insert(0,'100')
-        self.entry.grid(row=3, column=1)
+        self.resultText.grid(row=3, column=0, sticky=tk.N + tk.S + tk.E + tk.W, columnspan=9)
+        self.entry_label = tk.Label(self, text='Number of test cycles')
+        self.entry_label.grid(row=4, column=0)
+        self.entry = tk.Entry(self, justify=tk.CENTER)
+        self.entry.insert(0, '100')
+        self.entry.grid(row=4, column=1)
+        self.mf_labeling_Button = tk.Button(self, text='M.F. Labeling', command=self.exec_mf_labeling)
+        self.mf_labeling_Button.grid(row=1, column=1, sticky=tk.N + tk.S + tk.E + tk.W)
 
     def load(self):
         self.resultText.delete('1.0', tk.END)
@@ -163,11 +166,12 @@ class App(tk.Frame):
                     gg = radix_heap_dijkstra(dcp(self.graph))
                     best = min(gg.exec_time, best)
                     mean += gg.exec_time
-                mean *= 1000/tests
-                result = result + "Time statistics on "+str(tests)+" execution"
+                mean *= 1000 / tests
+                result = result + "Time statistics on " + str(tests) + " execution"
                 if tests > 1:
                     result = result + "s"
-                result = result+"\nBest time (milliseconds)= "+ str(best*1000) + "\n" + "Mean (milliseconds)= " + str(mean) + "\n"
+                result = result + "\nBest time (milliseconds)= " + str(
+                    best * 1000) + "\n" + "Mean (milliseconds)= " + str(mean) + "\n"
             self.resultText.insert(tk.INSERT, result)
         else:
             self.resultText.insert(tk.INSERT, "Graph not loaded")
@@ -240,6 +244,30 @@ class App(tk.Frame):
                 result = result + "s"
             result = result + "\nBest time (milliseconds)= " + str(best * 1000) + "\n" + "Mean (milliseconds)= " + str(
                 mean) + "\n"
+            self.resultText.insert(tk.INSERT, result)
+        else:
+            self.resultText.insert(tk.INSERT, "Graph not loaded")
+
+    def exec_mf_labeling(self):
+        self.resultText.delete('1.0', tk.END)
+        if self.graph is not None:
+            g = labeling(dcp(self.graph))
+            result = print_result2(g, "MF Labeling")
+            best = math.inf
+            mean = 0
+            tests = int(self.entry.get())
+            if tests < 1:
+                tests = 1
+            for x in range(tests):
+                gg = labeling(dcp(self.graph))
+                best = min(gg.exec_time, best)
+                mean += gg.exec_time
+            mean *= 1000 / tests
+            result = result + "Time statistics on " + str(tests) + " execution"
+            if tests > 1:
+                result = result + "s"
+            result = result + "\nBest time (milliseconds)= " + str(
+                best * 1000) + "\n" + "Mean (milliseconds)= " + str(mean) + "\n"
             self.resultText.insert(tk.INSERT, result)
         else:
             self.resultText.insert(tk.INSERT, "Graph not loaded")

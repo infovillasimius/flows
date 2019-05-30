@@ -23,20 +23,20 @@ def file_load(file):
         cap = [[numbers.pop(0) for x in range(n)] for y in range(n)]
 
         for i in range(n):
-            my_graph.nodeList.append(Node(val[i]))
+            my_graph.node_list.append(Node(val[i]))
 
         for row in range(n):
             for col in range(n):
                 if nad[row][col] == 1:
-                    my_graph.arcList.append(Arc(cost=cost[row][col], cap=cap[row][col], tail=my_graph.nodeList[row],
-                                                head=my_graph.nodeList[col]))
+                    my_graph.arc_list.append(Arc(cost=cost[row][col], capacity=cap[row][col], tail=my_graph.node_list[row],
+                                                 head=my_graph.node_list[col]))
 
-        for a in my_graph.arcList:
+        for a in my_graph.arc_list:
             a.head.inList.append(a)
             a.tail.outList.append(a)
 
-        my_graph.s = my_graph.nodeList[0]
-        my_graph.t = my_graph.nodeList[-1]
+        my_graph.s = my_graph.node_list[0]
+        my_graph.t = my_graph.node_list[-1]
 
         my_graph.number()
         my_graph.negative_cost_detector()
@@ -57,4 +57,15 @@ def print_result(g, algo):
     path.append(n)
     path.reverse()
     result = algo + " Algorithm\nSolution nodes = " + str(path) + "\n" + "Total cost = " + str(cost) + "\n"
+    return result
+
+
+def print_result2(g, algo):
+    max_flow_s = 0
+    max_flow_t = 0
+    for a in g.s.outList:
+        max_flow_s += a.flow
+    for a in g.t.inList:
+        max_flow_t += a.flow
+    result = algo + " Algorithm\nFlow exiting the source = " + str(max_flow_s) + "\n" + "Flow entering the sink = " + str(max_flow_t) + "\n"
     return result

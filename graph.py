@@ -10,6 +10,7 @@ class Node:
         self.inList: List[Arc] = []
         self.outList: List[Arc] = []
         self.predecessor = None
+        self.pred_arc = None
         self.num: int = None
         self.labeled = False
         self.contained = False
@@ -26,9 +27,12 @@ class Node:
 
 class Arc:
 
-    def __init__(self, tail: Node, head: Node, cost: int = 0, cap=math.inf):
+    def __init__(self, tail: Node, head: Node, cost=0, capacity=math.inf, flow=0):
         self.cost = cost
-        self.cap = cap
+        self.capacity = capacity
+        self.flow = flow
+        self.residual_forward_capacity = capacity - flow
+        self.residual_reverse_capacity = flow
         self.head = head
         self.tail = tail
 
@@ -42,8 +46,8 @@ class Arc:
 class Graph:
 
     def __init__(self):
-        self.nodeList: List[Node] = []
-        self.arcList: List[Arc] = []
+        self.node_list: List[Node] = []
+        self.arc_list: List[Arc] = []
         self.ordered: List[Node] = []
         self.s: Node = None
         self.t: Node = None
@@ -55,12 +59,12 @@ class Graph:
 
     def number(self):
         i = 1
-        for n in self.nodeList:
+        for n in self.node_list:
             n.num = i
             i += 1
 
     def initialize(self):
-        for n in self.nodeList:
+        for n in self.node_list:
             n.d = math.inf
             n.labeled = False
             n.previously = False
@@ -69,22 +73,21 @@ class Graph:
         self.order()
 
     def negative_cost_detector(self):
-        self.nodes_number = len(self.nodeList)
-
-        for a in self.arcList:
+        self.nodes_number = len(self.node_list)
+        for a in self.arc_list:
             self.C = max(self.C, a.cost)
             if a.cost < 0:
                 self.negative = True
 
     def order(self):
-        for n in self.nodeList:
+        for n in self.node_list:
             n.in_degree = 0
             n.order = 0
             next_n = 0
-        for a in self.arcList:
+        for a in self.arc_list:
             a.head.in_degree += 1
         new_list = []
-        for n in self.nodeList:
+        for n in self.node_list:
             if n.in_degree == 0:
                 new_list.append(n)
         while len(new_list) > 0:
@@ -96,4 +99,9 @@ class Graph:
                 a.head.in_degree -= 1
                 if a.head.in_degree == 0:
                     new_list.append(a.head)
-        self.is_ordered = next_n >= len(self.nodeList)
+        self.is_ordered = next_n >= len(self.node_list)
+
+    def set_residual(self):
+        for a in self.arc_list:
+            a.residual_forward_capacity = a.capacity - a.flow
+            a.residual_reverse_capacity = a.flow
