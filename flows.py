@@ -37,15 +37,21 @@ class App(tk.Frame):
         self.radix_heap_dijkstraButton.grid(row=0, column=4, sticky=tk.N + tk.S + tk.E + tk.W)
         self.label_correctingButton = tk.Button(self, text='Label Correcting', command=self.exec_label_correcting)
         self.label_correctingButton.grid(row=0, column=5, sticky=tk.N + tk.S + tk.E + tk.W)
+        self.fifo_label_correctingButton = tk.Button(self, text='FIFO L.C.',
+                                                     command=self.exec_fifo_label_correcting)
+        self.fifo_label_correctingButton.grid(row=0, column=6, sticky=tk.N + tk.S + tk.E + tk.W)
+        self.deque_label_correctingButton = tk.Button(self, text='Deque L.C.',
+                                                     command=self.exec_fifo_label_correcting)
+        self.deque_label_correctingButton.grid(row=0, column=7, sticky=tk.N + tk.S + tk.E + tk.W)
         self.quitButton = tk.Button(self, text='Quit', command=self.quit)
-        self.quitButton.grid(row=0, column=6, sticky=tk.N + tk.S + tk.E + tk.W)
+        self.quitButton.grid(row=0, column=8, sticky=tk.N + tk.S + tk.E + tk.W)
         self.resultText = tk.Text(self)  # , width=40, height=10)
-        self.resultText.grid(row=2, column=0, sticky=tk.N + tk.S + tk.E + tk.W, columnspan=7)
+        self.resultText.grid(row=2, column=0, sticky=tk.N + tk.S + tk.E + tk.W, columnspan=9)
         self.entry_label=tk.Label(self, text='Number of test cycles')
         self.entry_label.grid(row=3, column=0)
         self.entry=tk.Entry(self, justify=tk.CENTER)
 
-        self.entry.insert(0,'1')
+        self.entry.insert(0,'100')
         self.entry.grid(row=3, column=1)
 
     def load(self):
@@ -178,6 +184,54 @@ class App(tk.Frame):
                 tests = 1
             for x in range(tests):
                 gg = label_correcting(dcp(self.graph))
+                best = min(gg.exec_time, best)
+                mean += gg.exec_time
+            mean *= 1000 / tests
+            result = result + "Time statistics on " + str(tests) + " execution"
+            if tests > 1:
+                result = result + "s"
+            result = result + "\nBest time (milliseconds)= " + str(best * 1000) + "\n" + "Mean (milliseconds)= " + str(
+                mean) + "\n"
+            self.resultText.insert(tk.INSERT, result)
+        else:
+            self.resultText.insert(tk.INSERT, "Graph not loaded")
+
+    def exec_fifo_label_correcting(self):
+        self.resultText.delete('1.0', tk.END)
+        if self.graph is not None:
+            g = fifo_label_correcting(dcp(self.graph))
+            result = print_result(g, "FIFO Label Correcting")
+            best = math.inf
+            mean = 0
+            tests = int(self.entry.get())
+            if tests < 1:
+                tests = 1
+            for x in range(tests):
+                gg = fifo_label_correcting(dcp(self.graph))
+                best = min(gg.exec_time, best)
+                mean += gg.exec_time
+            mean *= 1000 / tests
+            result = result + "Time statistics on " + str(tests) + " execution"
+            if tests > 1:
+                result = result + "s"
+            result = result + "\nBest time (milliseconds)= " + str(best * 1000) + "\n" + "Mean (milliseconds)= " + str(
+                mean) + "\n"
+            self.resultText.insert(tk.INSERT, result)
+        else:
+            self.resultText.insert(tk.INSERT, "Graph not loaded")
+
+    def exec_deque_label_correcting(self):
+        self.resultText.delete('1.0', tk.END)
+        if self.graph is not None:
+            g = deque_label_correcting(dcp(self.graph))
+            result = print_result(g, "Deque Label Correcting")
+            best = math.inf
+            mean = 0
+            tests = int(self.entry.get())
+            if tests < 1:
+                tests = 1
+            for x in range(tests):
+                gg = deque_label_correcting(dcp(self.graph))
                 best = min(gg.exec_time, best)
                 mean += gg.exec_time
             mean *= 1000 / tests

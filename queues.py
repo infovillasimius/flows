@@ -105,11 +105,11 @@ class RadixHeap:
             return self.next()
         return r
 
-    def update(self, node, oldD):
-        old_bucket = self.__get_index(oldD)
+    def update(self, node, old_d):
+        old_bucket = self.__get_index(old_d)
         new_bucket = self.__get_index(node.d)
         if old_bucket != new_bucket:
-            if self.__h[old_bucket].__contains__(node):
+            if node in self.__h[old_bucket]:
                 self.__h[old_bucket].remove(node)
                 if len(self.__h[old_bucket]) == 0:
                     self.__h[old_bucket] = None

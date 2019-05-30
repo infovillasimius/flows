@@ -12,6 +12,8 @@ class Node:
         self.predecessor = None
         self.num: int = None
         self.labeled = False
+        self.contained = False
+        self.previously = False
         self.in_degree = 0
         self.order = 0
 
@@ -61,6 +63,8 @@ class Graph:
         for n in self.nodeList:
             n.d = math.inf
             n.labeled = False
+            n.previously = False
+            n.contained = False
         self.s.d = 0
         self.order()
 
