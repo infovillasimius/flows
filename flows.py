@@ -14,7 +14,7 @@ class App(tk.Frame):
         self.graph = None
         self.min_x = 400
         self.min_y = 400
-        self.max_x = 800
+        self.max_x = 1200
         self.max_y = 500
         self.create_widgets()
 
