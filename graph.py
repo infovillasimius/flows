@@ -17,6 +17,9 @@ class Node:
         self.previously = False
         self.in_degree = 0
         self.order = 0
+        self.mass_balance = 0
+        self.active_forward_arc = 0
+        self.active_reverse_arc = 0
 
     def __str__(self):
         return self.num.__str__()
@@ -42,6 +45,20 @@ class Arc:
     def __repr__(self):
         return self.tail.__str__() + " -> " + self.head.__str__()
 
+    def set_flow(self, flow):
+        if flow < 0:
+            return
+        if flow <= self.capacity:
+            delta = flow - self.flow
+            self.flow = flow
+        else:
+            delta = self.capacity - self.flow
+            self.flow = self.capacity
+        self.residual_forward_capacity = self.capacity - self.flow
+        self.residual_reverse_capacity = self.flow
+        self.tail.mass_balance -= delta
+        self.head.mass_balance += delta
+
 
 class Graph:
 
@@ -49,6 +66,7 @@ class Graph:
         self.node_list: List[Node] = []
         self.arc_list: List[Arc] = []
         self.ordered: List[Node] = []
+        self.active_node_list: List[Node] = []
         self.s: Node = None
         self.t: Node = None
         self.negative = False
@@ -71,6 +89,10 @@ class Graph:
             n.contained = False
         self.s.d = 0
         self.order()
+
+    def previously(self):
+        for n in self.node_list:
+            n.previously = False
 
     def negative_cost_detector(self):
         self.nodes_number = len(self.node_list)
@@ -105,3 +127,24 @@ class Graph:
         for a in self.arc_list:
             a.residual_forward_capacity = a.capacity - a.flow
             a.residual_reverse_capacity = a.flow
+
+    def reset_flows(self):
+        for n in self.node_list:
+            n.mass_balance = 0
+            n.active_forward_arc = 0
+        for a in self.arc_list:
+            a.flow = 0
+        self.set_residual()
+
+    def reverse_breadth_first_search(self):
+        self.previously()
+        q = [self.t]
+        self.t.previously = True
+        self.t.d = 0
+        while len(q) > 0:
+            n = q.pop(0)
+            for a in n.inList:
+                if not a.tail.previously:
+                    a.tail.previously = True
+                    a.tail.d = n.d + 1
+                    q.append(a.tail)

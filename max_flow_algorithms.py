@@ -1,3 +1,4 @@
+import math
 from timeit import default_timer as timer
 
 
@@ -60,5 +61,76 @@ def labeling(g):
                     my_list.append(a.tail)
             if t.previously:
                 augment(t)
+    g.exec_time = timer() - start_time
+    return g
+
+
+def pre_process(g):
+    g.reset_flows()
+    g.reverse_breadth_first_search()
+    s = g.s
+    for a in s.outList:
+        a.set_flow(a.capacity)
+        g.active_node_list.append(a.head)
+    s.d = g.nodes_number
+
+
+def push_relabel(i, g):
+    s = g.s
+    t = g.t
+    d = math.inf
+    in_size = len(i.inList)
+    out_size = len(i.outList)
+    while i.mass_balance > 0:
+        while i.mass_balance > 0 and i.active_forward_arc < out_size:
+            a = i.outList[i.active_forward_arc]
+            if a.head.d < a.tail.d and a.residual_forward_capacity > 0 and a.head != s:
+                a.set_flow(a.flow + min(a.residual_forward_capacity, i.mass_balance))
+                if a.head.mass_balance > 0 and a.head != t:
+                    g.active_node_list.append(a.head)
+            else:
+                i.active_forward_arc += 1
+        if i.active_forward_arc >= out_size:
+            i.active_forward_arc = 0
+        if i.mass_balance <= 0:
+            return
+        while i.mass_balance > 0 and i.active_reverse_arc < in_size:
+            a = i.inList[i.active_reverse_arc]
+            if a.residual_reverse_capacity > 0 and a.tail.d < a.head.d:
+                a.set_flow(a.flow - min(a.residual_reverse_capacity, i.mass_balance))
+                if a.tail.mass_balance > 0:
+                    g.active_node_list.append(a.tail)
+            else:
+                i.active_reverse_arc += 1
+        if i.active_reverse_arc >= in_size:
+            i.active_reverse_arc = 0
+        if i.mass_balance <= 0:
+            return
+        counter = 0
+        for aa in i.outList:
+            if aa.residual_forward_capacity > 0 and d > aa.head.d and aa.head != s:
+                d = aa.head.d
+                i.active_forward_arc = counter
+            counter +=1
+
+        counter = 0
+        for aa in i.inList:
+            if aa.residual_reverse_capacity > 0 and d > aa.tail.d:
+                d = aa.tail.d
+                i.active_reverse_arc = counter
+                i.active_forward_arc = out_size
+        i.d = d + 1
+        d = math.inf
+
+
+def pre_flow_push(g):
+    t = g.t
+    g.active_node_list.clear()
+    pre_process(g)
+    start_time = timer()
+    while len(g.active_node_list) > 0:
+        n = g.active_node_list.pop(0)
+        if n.mass_balance > 0 and n != t:
+            push_relabel(n, g)
     g.exec_time = timer() - start_time
     return g

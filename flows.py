@@ -43,7 +43,7 @@ class App(tk.Frame):
                                                      command=self.exec_fifo_label_correcting)
         self.fifo_label_correctingButton.grid(row=0, column=6, sticky=tk.N + tk.S + tk.E + tk.W)
         self.deque_label_correctingButton = tk.Button(self, text='Deque L.C.',
-                                                      command=self.exec_fifo_label_correcting)
+                                                      command=self.exec_deque_label_correcting)
         self.deque_label_correctingButton.grid(row=0, column=7, sticky=tk.N + tk.S + tk.E + tk.W)
         self.quitButton = tk.Button(self, text='Quit', command=self.quit)
         self.quitButton.grid(row=0, column=8, sticky=tk.N + tk.S + tk.E + tk.W)
@@ -56,6 +56,11 @@ class App(tk.Frame):
         self.entry.grid(row=4, column=1)
         self.mf_labeling_Button = tk.Button(self, text='M.F. Labeling', command=self.exec_mf_labeling)
         self.mf_labeling_Button.grid(row=1, column=1, sticky=tk.N + tk.S + tk.E + tk.W)
+        self.mf_pre_flow_push_Button = tk.Button(self, text='M.F. PreFlow Push', command=self.exec_mf_pre_flow_push)
+        self.mf_pre_flow_push_Button.grid(row=1, column=2, sticky=tk.N + tk.S + tk.E + tk.W)
+
+
+
 
     def load(self):
         self.resultText.delete('1.0', tk.END)
@@ -260,6 +265,30 @@ class App(tk.Frame):
                 tests = 1
             for x in range(tests):
                 gg = labeling(dcp(self.graph))
+                best = min(gg.exec_time, best)
+                mean += gg.exec_time
+            mean *= 1000 / tests
+            result = result + "Time statistics on " + str(tests) + " execution"
+            if tests > 1:
+                result = result + "s"
+            result = result + "\nBest time (milliseconds)= " + str(
+                best * 1000) + "\n" + "Mean (milliseconds)= " + str(mean) + "\n"
+            self.resultText.insert(tk.INSERT, result)
+        else:
+            self.resultText.insert(tk.INSERT, "Graph not loaded")
+
+    def exec_mf_pre_flow_push(self):
+        self.resultText.delete('1.0', tk.END)
+        if self.graph is not None:
+            g = pre_flow_push(dcp(self.graph))
+            result = print_result2(g, "MF PreFlow Push")
+            best = math.inf
+            mean = 0
+            tests = int(self.entry.get())
+            if tests < 1:
+                tests = 1
+            for x in range(tests):
+                gg = pre_flow_push(dcp(self.graph))
                 best = min(gg.exec_time, best)
                 mean += gg.exec_time
             mean *= 1000 / tests
