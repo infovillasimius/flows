@@ -48,6 +48,8 @@ def file_load(file):
 
 
 def print_result(g, algo):
+    if g is None:
+        return algo + " Algorithm\nNo result"
     n = g.t
     cost = n.d
     path = []
@@ -61,6 +63,8 @@ def print_result(g, algo):
 
 
 def print_result2(g, algo):
+    if g is None:
+        return algo + " Algorithm\nNo result"
     max_flow_s = 0
     max_flow_t = 0
     for a in g.s.outList:
@@ -68,4 +72,11 @@ def print_result2(g, algo):
     for a in g.t.inList:
         max_flow_t += a.flow
     result = algo + " Algorithm\nFlow exiting the source = " + str(max_flow_s) + "\n" + "Flow entering the sink = " + str(max_flow_t) + "\n"
+    return result
+
+
+def print_result3(g: Graph, algo):
+    if g is None:
+        return algo + " Algorithm\nNo result"
+    result = algo + " Algorithm\nSuccessive paths: "+str(g.times)+"\nTotal cost: "+str(g.get_cost())+"\nFlows Paths: " + str([(a.node_list[::-1], a.flow) for a in g.paths]) + "\n"
     return result

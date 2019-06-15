@@ -1,6 +1,8 @@
 import tkinter as tk
 from copy import deepcopy as dcp
 from tkinter import filedialog
+
+from mcf_algorithms import successive_shortest_path
 from spp_algorithms import *
 from max_flow_algorithms import *
 from utility import *
@@ -58,9 +60,8 @@ class App(tk.Frame):
         self.mf_labeling_Button.grid(row=1, column=1, sticky=tk.N + tk.S + tk.E + tk.W)
         self.mf_pre_flow_push_Button = tk.Button(self, text='M.F. PreFlow Push', command=self.exec_mf_pre_flow_push)
         self.mf_pre_flow_push_Button.grid(row=1, column=2, sticky=tk.N + tk.S + tk.E + tk.W)
-
-
-
+        self.mcf_successive_shortest_path_Button = tk.Button(self, text='M.C.F. Succ Shortest Path', command=self.exec_mcf_successive_shortest_path)
+        self.mcf_successive_shortest_path_Button.grid(row=1, column=3, sticky=tk.N + tk.S + tk.E + tk.W)
 
     def load(self):
         self.resultText.delete('1.0', tk.END)
@@ -300,6 +301,43 @@ class App(tk.Frame):
             self.resultText.insert(tk.INSERT, result)
         else:
             self.resultText.insert(tk.INSERT, "Graph not loaded")
+
+    def exec_mcf_successive_shortest_path(self):
+        self.resultText.delete('1.0', tk.END)
+        if self.graph is not None:
+            g = successive_shortest_path(dcp(self.graph))
+            result = print_result3(g, "MCF Successive Shortest Path")
+            if g.mcf_error:
+                self.resultText.insert(tk.INSERT, "Error in finding base feasible solution")
+                return
+            elif g.not_feasible:
+                self.resultText.insert(tk.INSERT, "No feasible solution")
+                return
+            else:
+
+                best = math.inf
+                mean = 0
+                tests = int(self.entry.get())
+                if tests < 1:
+                    tests = 1
+                for x in range(tests):
+                    gg = successive_shortest_path(dcp(self.graph))
+                    best = min(gg.exec_time, best)
+                    mean += gg.exec_time
+                mean *= 1000 / tests
+                result = result + "Time statistics on " + str(tests) + " execution"
+                if tests > 1:
+                    result = result + "s"
+                result = result + "\nBest time (milliseconds)= " + str(
+                    best * 1000) + "\n" + "Mean (milliseconds)= " + str(mean) + "\n"
+                self.resultText.insert(tk.INSERT, result)
+        else:
+            self.resultText.insert(tk.INSERT, "Graph not loaded")
+
+
+
+
+
 
 
 app = App()

@@ -1,5 +1,6 @@
 from timeit import default_timer as timer
 from queues import *
+from graph import *
 
 
 def dynamic(g):
@@ -161,6 +162,7 @@ def deque_label_correcting(g):
                     else:
                         q.append(a.head)
                     a.head.contained = True
+                    a.head.previously = True
         if dist < min_dist:
             g.nCycle = n
             q.clear()

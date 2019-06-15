@@ -60,6 +60,16 @@ class Arc:
         self.head.mass_balance += delta
 
 
+class Path:
+    def __init__(self):
+        self.node_list: List[Node] = []
+        self.arc_list: List[Arc] = []
+        self.reverse = False
+        self.cycle = False
+        self.flow = 0
+        self.cost = 0
+
+
 class Graph:
 
     def __init__(self):
@@ -67,13 +77,19 @@ class Graph:
         self.arc_list: List[Arc] = []
         self.ordered: List[Node] = []
         self.active_node_list: List[Node] = []
+        self.paths: List[Path] = []
         self.s: Node = None
         self.t: Node = None
         self.negative = False
+        self.neg_cycle = False
+        self.not_feasible = False
+        self.mcf_error = False
         self.C = -math.inf
         self.nodes_number = 0
         self.exec_time = 0.0
         self.is_ordered = False
+        self.source_flow = 0
+        self.times = 0
 
     def number(self):
         i = 1
@@ -148,3 +164,14 @@ class Graph:
                     a.tail.previously = True
                     a.tail.d = n.d + 1
                     q.append(a.tail)
+
+    def set_source_residual_flow(self):
+        self.source_flow = 0
+        for a in self.s.outList:
+            self.source_flow += a.residual_forward_capacity
+
+    def get_cost(self):
+        total_cost = 0
+        for a in self.arc_list:
+            total_cost += a.flow * a.cost
+        return total_cost
