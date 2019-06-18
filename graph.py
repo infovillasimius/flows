@@ -18,8 +18,10 @@ class Node:
         self.in_degree = 0
         self.order = 0
         self.mass_balance = 0
+        self.flow_balance = 0
         self.active_forward_arc = 0
         self.active_reverse_arc = 0
+
 
     def __str__(self):
         return self.num.__str__()
@@ -110,6 +112,10 @@ class Graph:
         for n in self.node_list:
             n.previously = False
 
+    def contained(self):
+        for n in self.node_list:
+            n.contained = False
+
     def negative_cost_detector(self):
         self.nodes_number = len(self.node_list)
         for a in self.arc_list:
@@ -124,19 +130,19 @@ class Graph:
             next_n = 0
         for a in self.arc_list:
             a.head.in_degree += 1
-        new_list = []
+        zero_indegree_list = []
         for n in self.node_list:
             if n.in_degree == 0:
-                new_list.append(n)
-        while len(new_list) > 0:
-            n = new_list.pop(0)
+                zero_indegree_list.append(n)
+        while len(zero_indegree_list) > 0:
+            n = zero_indegree_list.pop(0)
             next_n += 1
             n.order = next_n
             self.ordered.append(n)
             for a in n.outList:
                 a.head.in_degree -= 1
                 if a.head.in_degree == 0:
-                    new_list.append(a.head)
+                    zero_indegree_list.append(a.head)
         self.is_ordered = next_n >= len(self.node_list)
 
     def set_residual(self):

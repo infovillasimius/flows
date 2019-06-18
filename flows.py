@@ -275,6 +275,10 @@ class App(tk.Frame):
             result = result + "\nBest time (milliseconds)= " + str(
                 best * 1000) + "\n" + "Mean (milliseconds)= " + str(mean) + "\n"
             self.resultText.insert(tk.INSERT, result)
+
+            (paths, cycles) = flow_decomposition(g)
+            result = print_result4(paths, cycles)
+            self.resultText.insert(tk.INSERT, result)
         else:
             self.resultText.insert(tk.INSERT, "Graph not loaded")
 
@@ -298,6 +302,10 @@ class App(tk.Frame):
                 result = result + "s"
             result = result + "\nBest time (milliseconds)= " + str(
                 best * 1000) + "\n" + "Mean (milliseconds)= " + str(mean) + "\n"
+            self.resultText.insert(tk.INSERT, result)
+
+            (paths, cycles) = flow_decomposition(g)
+            result = print_result4(paths, cycles)
             self.resultText.insert(tk.INSERT, result)
         else:
             self.resultText.insert(tk.INSERT, "Graph not loaded")
@@ -331,13 +339,12 @@ class App(tk.Frame):
                 result = result + "\nBest time (milliseconds)= " + str(
                     best * 1000) + "\n" + "Mean (milliseconds)= " + str(mean) + "\n"
                 self.resultText.insert(tk.INSERT, result)
+
+                (paths, cycles)= flow_decomposition(g)
+                result = print_result4(paths, cycles)
+                self.resultText.insert(tk.INSERT, result)
         else:
             self.resultText.insert(tk.INSERT, "Graph not loaded")
-
-
-
-
-
 
 
 app = App()

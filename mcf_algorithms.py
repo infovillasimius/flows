@@ -167,8 +167,10 @@ def successive_shortest_path(g: Graph):
     g.arc_list = [a for a in fgraph.arc_list]
     for a in g.node_list[0].outList:
         g.arc_list.remove(a)
+        a.head.inList.remove(a)
     for a in g.node_list[-1].inList:
         g.arc_list.remove(a)
+        a.tail.outList.remove(a)
     g.node_list.pop(0)
     g.node_list.pop(-1)
     g.number()
