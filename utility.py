@@ -95,7 +95,6 @@ def get_initial_node(g: Graph):
             out_flow += a.flow
         if in_flow < out_flow:
             n.flow_balance = out_flow - in_flow
-            # print(n)
             return n
     return None
 
@@ -107,7 +106,6 @@ def depth_first_search(n: Node, g: Graph):
     excess_node_list = []
     path = Path()
     path.flow = n.flow_balance
-    print (n.flow_balance)
     path.node_list.append(n)
 
     for node in g.node_list:
@@ -119,7 +117,6 @@ def depth_first_search(n: Node, g: Graph):
             out_flow += a.flow
         if in_flow > out_flow:
             node.flow_balance = in_flow - out_flow
-            # print ("Nodo:" + str(node) + " " + str(node.flow_balance))
             excess_node_list.append(node)
 
     while len(q) > 0:
@@ -130,18 +127,13 @@ def depth_first_search(n: Node, g: Graph):
                 path.flow = min(path.flow, a.flow)
                 path.node_list.append(a.head)
                 path.cycle = True
-                print("path flow: "+str(path.flow))
                 return path
             elif excess_node_list.__contains__(a.head) and a.flow > 0:
-                print("path flow 1: " + str(path.flow))
-
                 path.flow = min(path.flow, a.flow, a.head.flow_balance)
-                print("path flow: " + str(path.flow))
                 path.node_list.append(a.head)
                 path.arc_list.append(a)
                 return path
             if not a.head.previously and a.flow > 0:
-                print(str(a.head) +" "+ str(a.flow))
                 path.flow = min(path.flow, a.flow)
                 a.head.previously = True
                 q.append(a.head)
@@ -163,7 +155,6 @@ def flow_decomposition(g: Graph):
     n = get_initial_node(g)
     while n is not None:
         w = depth_first_search(n, g)
-        print(str(w.node_list), w.flow)
         for a in w.arc_list:
             a.flow -= w.flow
         if w.cycle:
