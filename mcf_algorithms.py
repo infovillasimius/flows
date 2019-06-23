@@ -48,14 +48,13 @@ def is_feasible(fg: Graph):
 def modified_deque_label_correcting(g: Graph):
     g.initialize()
     min_dist = -g.nodes_number * g.C
-    nCycle = g.t
+    n_cycle = g.t
     q = [g.s]
     g.s.contained = True
 
     while len(q) > 0:
         n = q.pop(0)
         n.contained = False
-
         for a in n.outList:
             dist = a.tail.d + a.cost
             if a.head.d > dist and a.residual_forward_capacity > 0:
@@ -83,21 +82,21 @@ def modified_deque_label_correcting(g: Graph):
                         q.append(a.tail)
                     a.tail.contained = True
                     a.tail.previously = True
+
         if dist < min_dist:
-            nCycle = n
+            n_cycle = n
             q.clear()
             g.neg_cycle = True
-            return nCycle
+            return n_cycle
 
     g.neg_cycle = False
-    return nCycle
+    return n_cycle
 
 
 def new_path_search(fgraph: Graph):
-    ncycle = modified_deque_label_correcting(fgraph)
-    n: Node = ncycle
+    n_cycle = modified_deque_label_correcting(fgraph)
+    n: Node = n_cycle
     if n != fgraph.t:
-        print("Error")
         return True
     arcs = []
     min_res_cap = math.inf
@@ -123,7 +122,7 @@ def new_path_search(fgraph: Graph):
             path.node_list.append(n)
             path.node_list.pop(0)
             return True
-    n = ncycle
+    n = n_cycle
 
     for a in arcs:
         if n.pred_arc.head == n:
@@ -174,4 +173,85 @@ def successive_shortest_path(g: Graph):
     g.node_list.pop(0)
     g.node_list.pop(-1)
     g.number()
+    return g
+
+
+def flow_neg_cycle(n, g):
+    min_res_cap = math.inf
+    g.previously()
+    path = Path()
+    path.cycle = True
+    g.paths.append(path)
+    while n.previously is not True:
+        n.previously = True
+        n = n.predecessor
+    g.previously()
+    while n.previously is not True:
+        path.arc_list.append(n.pred_arc)
+        path.node_list.append(n)
+        n.previously = True
+        n = n.predecessor
+    path.node_list.append(n)
+    node = 0
+    path.node_list.reverse()
+    path.arc_list.reverse()
+    for a in path.arc_list:
+        n = path.node_list[node]
+        node += 1
+        if a.tail == n:
+            if min_res_cap > a.residual_forward_capacity:
+                min_res_cap = a.residual_forward_capacity
+        else:
+            if min_res_cap > a.residual_reverse_capacity:
+                min_res_cap = a.residual_reverse_capacity
+    node = 0
+    for a in path.arc_list:
+        n = path.node_list[node]
+        node += 1
+        if a.tail == n:
+            a.set_flow(a.flow + min_res_cap)
+        else:
+            a.set_flow(a.flow - min_res_cap)
+    path.flow = min_res_cap
+
+
+def cycle_canceling(g: Graph):
+    g.reset_flows()
+    g.paths.clear()
+    times = 0
+    fgraph = get_graph_for_feasible_solution(g)
+    if fgraph is None:
+        g.mcf_error = True
+        return g
+    fgraph = labeling(fgraph)
+
+    if not is_feasible(fgraph):
+        g.not_feasible = True
+        return g
+    g = fgraph
+
+    for a in g.node_list[0].outList:
+        g.arc_list.remove(a)
+        a.head.inList.remove(a)
+    for a in g.node_list[-1].inList:
+        g.arc_list.remove(a)
+        a.tail.outList.remove(a)
+    g.node_list.pop(0)
+    g.node_list.pop(-1)
+    g.number()
+    g.s = g.node_list[0]
+    g.t = g.node_list[-1]
+    g.neg_cycle = True
+    start_time = timer()
+    while g.neg_cycle:
+
+        n = modified_deque_label_correcting(g)
+
+        if g.neg_cycle:
+            flow_neg_cycle(n, g)
+            times += 1
+
+    g.exec_time = timer() - start_time
+    g.times = times
+
     return g

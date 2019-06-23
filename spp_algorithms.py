@@ -48,7 +48,7 @@ def dial_dijkstra(g):
     q = CircularQueue(g.C + 1)
     q.store(g.s)
     start_time = timer()
-    while my_list.__len__() > 0:
+    while len(my_list) > 0:
         n = q.next()
         if not n.labeled:
             my_list.remove(n)
@@ -169,3 +169,5 @@ def deque_label_correcting(g):
 
     g.exec_time = timer() - start_time
     return g
+
+

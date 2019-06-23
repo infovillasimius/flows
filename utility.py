@@ -80,8 +80,11 @@ def print_result2(g, algo):
 def print_result3(g: Graph, algo):
     if g is None:
         return algo + " Algorithm\nNo result"
-    result = algo + " Algorithm\nSuccessive paths: " + str(g.times) + "\nTotal cost: " + str(
+    result = algo + " Algorithm"
+    result += "\nNode Mass Balances b(i): " + str([a.value for a in g.node_list])
+    result += "\nSuccessive paths: " + str(g.times) + "\nTotal cost: " + str(
         g.get_cost()) + "\nFlows Paths: " + str([(a.node_list[::-1], a.flow) for a in g.paths]) + "\n"
+    
     return result
 
 
@@ -170,4 +173,15 @@ def print_result4(paths, cycles):
     result = "\nFlow Decomposition Algorithm\nFlows Paths: " + str(
         [(a.node_list, a.flow) for a in paths]) + "\nFlow Cycles: " + str(
         [(a.node_list, a.flow) for a in cycles])
+    return result
+
+
+def print_result5(g: Graph, algo):
+    if g is None:
+        return algo + " Algorithm\nNo result"
+    result = algo + " Algorithm"
+    result += "\nNode Mass Balances b(i): " + str([a.value for a in g.node_list])
+    result += "\nNumber of Cycles : " + str(g.times) + "\nTotal cost: " + str(
+        g.get_cost()) + "\nCanceled Cycles: " + str([(a.node_list, a.flow) for a in g.paths]) + "\n"
+
     return result

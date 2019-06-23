@@ -105,6 +105,8 @@ class Graph:
             n.labeled = False
             n.previously = False
             n.contained = False
+            n.predecessor = None
+            n.pred_arc = None
         self.s.d = 0
         self.order()
 
