@@ -91,7 +91,7 @@ def radix_heap_dijkstra(g):
     return g
 
 
-def label_correcting(g):
+def label_correcting(g: Graph):
     g.initialize()
     min_dist = -g.nodes_number * g.C
     opt_cond = False
@@ -109,6 +109,8 @@ def label_correcting(g):
         if dist < min_dist:
             opt_cond = True
             g.nCycle = n
+            g.neg_cycle = True
+
     g.exec_time = timer() - start_time
     return g
 
@@ -134,6 +136,7 @@ def fifo_label_correcting(g):
                     a.head.contained = True
         if dist < min_dist:
             g.nCycle = n
+            g.neg_cycle = True
             q.clear()
 
     g.exec_time = timer() - start_time
@@ -165,6 +168,7 @@ def deque_label_correcting(g):
                     a.head.previously = True
         if dist < min_dist:
             g.nCycle = n
+            g.neg_cycle = True
             q.clear()
 
     g.exec_time = timer() - start_time

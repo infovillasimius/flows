@@ -224,12 +224,10 @@ def cycle_canceling(g: Graph):
         g.mcf_error = True
         return g
     fgraph = labeling(fgraph)
-
     if not is_feasible(fgraph):
         g.not_feasible = True
         return g
     g = fgraph
-
     for a in g.node_list[0].outList:
         g.arc_list.remove(a)
         a.head.inList.remove(a)
@@ -244,14 +242,10 @@ def cycle_canceling(g: Graph):
     g.neg_cycle = True
     start_time = timer()
     while g.neg_cycle:
-
         n = modified_deque_label_correcting(g)
-
         if g.neg_cycle:
             flow_neg_cycle(n, g)
             times += 1
-
     g.exec_time = timer() - start_time
     g.times = times
-
     return g

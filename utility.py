@@ -1,4 +1,5 @@
 from graph import *
+from copy import deepcopy as dcp
 
 
 def file_load(file):
@@ -48,9 +49,11 @@ def file_load(file):
     return my_graph
 
 
-def print_result(g, algo):
+def print_result(g: Graph, algorithm):
     if g is None:
-        return algo + " Algorithm\nNo result"
+        return algorithm + " Algorithm\nNo result"
+    if g.neg_cycle:
+        return algorithm + " Algorithm\nNegative Cycle detected!\n"
     n = g.t
     cost = n.d
     path = []
@@ -59,28 +62,28 @@ def print_result(g, algo):
         n = n.predecessor
     path.append(n)
     path.reverse()
-    result = algo + " Algorithm\nSolution nodes = " + str(path) + "\n" + "Total cost = " + str(cost) + "\n"
+    result = algorithm + " Algorithm\nSolution nodes = " + str(path) + "\n" + "Total cost = " + str(cost) + "\n"
     return result
 
 
-def print_result2(g, algo):
+def print_result2(g, algorithm_name):
     if g is None:
-        return algo + " Algorithm\nNo result"
+        return algorithm_name + " Algorithm\nNo result"
     max_flow_s = 0
     max_flow_t = 0
     for a in g.s.outList:
         max_flow_s += a.flow
     for a in g.t.inList:
         max_flow_t += a.flow
-    result = algo + " Algorithm\nFlow exiting the source = " + str(
+    result = algorithm_name + " Algorithm\nFlow exiting the source = " + str(
         max_flow_s) + "\n" + "Flow entering the sink = " + str(max_flow_t) + "\n"
     return result
 
 
-def print_result3(g: Graph, algo):
+def print_result3(g: Graph, algorithm_name):
     if g is None:
-        return algo + " Algorithm\nNo result"
-    result = algo + " Algorithm"
+        return algorithm_name + " Algorithm\nNo result"
+    result = algorithm_name + " Algorithm"
     result += "\nNode Mass Balances b(i): " + str([a.value for a in g.node_list])
     result += "\nSuccessive paths: " + str(g.times) + "\nTotal cost: " + str(
         g.get_cost()) + "\nFlows Paths: " + str([(a.node_list[::-1], a.flow) for a in g.paths]) + "\n"
@@ -184,4 +187,23 @@ def print_result5(g: Graph, algo):
     result += "\nNumber of Cycles : " + str(g.times) + "\nTotal cost: " + str(
         g.get_cost()) + "\nCanceled Cycles: " + str([(a.node_list, a.flow) for a in g.paths]) + "\n"
 
+    return result
+
+
+def test(tests: int, g: Graph, algorithm):
+    best = math.inf
+    mean = 0
+
+    if tests < 1:
+        tests = 1
+    for x in range(tests):
+        gg = algorithm(dcp(g))
+        best = min(gg.exec_time, best)
+        mean += gg.exec_time
+    mean *= 1000 / tests
+    result = "Time statistics on " + str(tests) + " execution"
+    if tests > 1:
+        result = result + "s"
+    result = result + "\nBest time (milliseconds)= " + str(
+        best * 1000) + "\n" + "Mean (milliseconds)= " + str(mean) + "\n"
     return result

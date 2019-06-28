@@ -86,21 +86,7 @@ class App(tk.Frame):
                 result = "Cycle detected!\n"
             else:
                 result = print_result(g, "Dynamic")
-                best = math.inf
-                mean = 0
-                tests = int(self.entry.get())
-                if tests < 1:
-                    tests = 1
-                for x in range(tests):
-                    gg = dynamic(dcp(self.graph))
-                    best = min(gg.exec_time, best)
-                    mean += gg.exec_time
-                mean *= 1000 / tests
-                result = result + "Time statistics on " + str(tests) + " execution"
-                if tests > 1:
-                    result = result + "s"
-                result = result + "\nBest time (milliseconds)= " + str(
-                    best * 1000) + "\n" + "Mean (milliseconds)= " + str(mean) + "\n"
+                result = result + test(int(self.entry.get()), self.graph, dynamic)
             self.resultText.insert(tk.INSERT, result)
         else:
             self.resultText.insert(tk.INSERT, "Graph not loaded")
@@ -113,21 +99,7 @@ class App(tk.Frame):
                 result = "Negative arc cost detected!\n"
             else:
                 result = print_result(g, "Dijkstra")
-                best = math.inf
-                mean = 0
-                tests = int(self.entry.get())
-                if tests < 1:
-                    tests = 1
-                for x in range(tests):
-                    gg = dijkstra(dcp(self.graph))
-                    best = min(gg.exec_time, best)
-                    mean += gg.exec_time
-                mean *= 1000 / tests
-                result = result + "Time statistics on " + str(tests) + " execution"
-                if tests > 1:
-                    result = result + "s"
-                result = result + "\nBest time (milliseconds)= " + str(
-                    best * 1000) + "\n" + "Mean (milliseconds)= " + str(mean) + "\n"
+                result = result + test(int(self.entry.get()), self.graph, dijkstra)
             self.resultText.insert(tk.INSERT, result)
         else:
             self.resultText.insert(tk.INSERT, "Graph not loaded")
@@ -140,21 +112,7 @@ class App(tk.Frame):
                 result = "Negative arc cost detected!\n"
             else:
                 result = print_result(g, "Dial Dijkstra")
-                best = math.inf
-                mean = 0
-                tests = int(self.entry.get())
-                if tests < 1:
-                    tests = 1
-                for x in range(tests):
-                    gg = dial_dijkstra(dcp(self.graph))
-                    best = min(gg.exec_time, best)
-                    mean += gg.exec_time
-                mean *= 1000 / tests
-                result = result + "Time statistics on " + str(tests) + " execution"
-                if tests > 1:
-                    result = result + "s"
-                result = result + "\nBest time (milliseconds)= " + str(
-                    best * 1000) + "\n" + "Mean (milliseconds)= " + str(mean) + "\n"
+                result = result + test(int(self.entry.get()), self.graph, dial_dijkstra)
             self.resultText.insert(tk.INSERT, result)
         else:
             self.resultText.insert(tk.INSERT, "Graph not loaded")
@@ -167,21 +125,7 @@ class App(tk.Frame):
                 result = "Negative arc cost detected!\n"
             else:
                 result = print_result(g, "Radix Heap Dijkstra")
-                best = math.inf
-                mean = 0
-                tests = int(self.entry.get())
-                if tests < 1:
-                    tests = 1
-                for x in range(tests):
-                    gg = radix_heap_dijkstra(dcp(self.graph))
-                    best = min(gg.exec_time, best)
-                    mean += gg.exec_time
-                mean *= 1000 / tests
-                result = result + "Time statistics on " + str(tests) + " execution"
-                if tests > 1:
-                    result = result + "s"
-                result = result + "\nBest time (milliseconds)= " + str(
-                    best * 1000) + "\n" + "Mean (milliseconds)= " + str(mean) + "\n"
+                result = result + test(int(self.entry.get()), self.graph, radix_heap_dijkstra)
             self.resultText.insert(tk.INSERT, result)
         else:
             self.resultText.insert(tk.INSERT, "Graph not loaded")
@@ -191,21 +135,7 @@ class App(tk.Frame):
         if self.graph is not None:
             g = label_correcting(dcp(self.graph))
             result = print_result(g, "Label Correcting")
-            best = math.inf
-            mean = 0
-            tests = int(self.entry.get())
-            if tests < 1:
-                tests = 1
-            for x in range(tests):
-                gg = label_correcting(dcp(self.graph))
-                best = min(gg.exec_time, best)
-                mean += gg.exec_time
-            mean *= 1000 / tests
-            result = result + "Time statistics on " + str(tests) + " execution"
-            if tests > 1:
-                result = result + "s"
-            result = result + "\nBest time (milliseconds)= " + str(best * 1000) + "\n" + "Mean (milliseconds)= " + str(
-                mean) + "\n"
+            result = result + test(int(self.entry.get()), self.graph, label_correcting)
             self.resultText.insert(tk.INSERT, result)
         else:
             self.resultText.insert(tk.INSERT, "Graph not loaded")
@@ -215,21 +145,7 @@ class App(tk.Frame):
         if self.graph is not None:
             g = fifo_label_correcting(dcp(self.graph))
             result = print_result(g, "FIFO Label Correcting")
-            best = math.inf
-            mean = 0
-            tests = int(self.entry.get())
-            if tests < 1:
-                tests = 1
-            for x in range(tests):
-                gg = fifo_label_correcting(dcp(self.graph))
-                best = min(gg.exec_time, best)
-                mean += gg.exec_time
-            mean *= 1000 / tests
-            result = result + "Time statistics on " + str(tests) + " execution"
-            if tests > 1:
-                result = result + "s"
-            result = result + "\nBest time (milliseconds)= " + str(best * 1000) + "\n" + "Mean (milliseconds)= " + str(
-                mean) + "\n"
+            result = result + test(int(self.entry.get()), self.graph, fifo_label_correcting)
             self.resultText.insert(tk.INSERT, result)
         else:
             self.resultText.insert(tk.INSERT, "Graph not loaded")
@@ -239,21 +155,7 @@ class App(tk.Frame):
         if self.graph is not None:
             g = deque_label_correcting(dcp(self.graph))
             result = print_result(g, "Deque Label Correcting")
-            best = math.inf
-            mean = 0
-            tests = int(self.entry.get())
-            if tests < 1:
-                tests = 1
-            for x in range(tests):
-                gg = deque_label_correcting(dcp(self.graph))
-                best = min(gg.exec_time, best)
-                mean += gg.exec_time
-            mean *= 1000 / tests
-            result = result + "Time statistics on " + str(tests) + " execution"
-            if tests > 1:
-                result = result + "s"
-            result = result + "\nBest time (milliseconds)= " + str(best * 1000) + "\n" + "Mean (milliseconds)= " + str(
-                mean) + "\n"
+            result = result + test(int(self.entry.get()), self.graph, deque_label_correcting)
             self.resultText.insert(tk.INSERT, result)
         else:
             self.resultText.insert(tk.INSERT, "Graph not loaded")
@@ -263,23 +165,8 @@ class App(tk.Frame):
         if self.graph is not None:
             g = labeling(dcp(self.graph))
             result = print_result2(g, "MF Labeling")
-            best = math.inf
-            mean = 0
-            tests = int(self.entry.get())
-            if tests < 1:
-                tests = 1
-            for x in range(tests):
-                gg = labeling(dcp(self.graph))
-                best = min(gg.exec_time, best)
-                mean += gg.exec_time
-            mean *= 1000 / tests
-            result = result + "Time statistics on " + str(tests) + " execution"
-            if tests > 1:
-                result = result + "s"
-            result = result + "\nBest time (milliseconds)= " + str(
-                best * 1000) + "\n" + "Mean (milliseconds)= " + str(mean) + "\n"
+            result = result + test(int(self.entry.get()), self.graph, labeling)
             self.resultText.insert(tk.INSERT, result)
-
             (paths, cycles) = flow_decomposition(g)
             result = print_result4(paths, cycles)
             self.resultText.insert(tk.INSERT, result)
@@ -291,21 +178,7 @@ class App(tk.Frame):
         if self.graph is not None:
             g = pre_flow_push(dcp(self.graph))
             result = print_result2(g, "MF PreFlow Push")
-            best = math.inf
-            mean = 0
-            tests = int(self.entry.get())
-            if tests < 1:
-                tests = 1
-            for x in range(tests):
-                gg = pre_flow_push(dcp(self.graph))
-                best = min(gg.exec_time, best)
-                mean += gg.exec_time
-            mean *= 1000 / tests
-            result = result + "Time statistics on " + str(tests) + " execution"
-            if tests > 1:
-                result = result + "s"
-            result = result + "\nBest time (milliseconds)= " + str(
-                best * 1000) + "\n" + "Mean (milliseconds)= " + str(mean) + "\n"
+            result = result + test(int(self.entry.get()), self.graph, pre_flow_push)
             self.resultText.insert(tk.INSERT, result)
 
             (paths, cycles) = flow_decomposition(g)
@@ -326,23 +199,8 @@ class App(tk.Frame):
                 self.resultText.insert(tk.INSERT, "No feasible solution")
                 return
             else:
-                best = math.inf
-                mean = 0
-                tests = int(self.entry.get())
-                if tests < 1:
-                    tests = 1
-                for x in range(tests):
-                    gg = successive_shortest_path(dcp(self.graph))
-                    best = min(gg.exec_time, best)
-                    mean += gg.exec_time
-                mean *= 1000 / tests
-                result = result + "Time statistics on " + str(tests) + " execution"
-                if tests > 1:
-                    result = result + "s"
-                result = result + "\nBest time (milliseconds)= " + str(
-                    best * 1000) + "\n" + "Mean (milliseconds)= " + str(mean) + "\n"
+                result = result + test(int(self.entry.get()), self.graph, successive_shortest_path)
                 self.resultText.insert(tk.INSERT, result)
-
                 (paths, cycles)= flow_decomposition(g)
                 result = print_result4(paths, cycles)
                 self.resultText.insert(tk.INSERT, result)
@@ -361,24 +219,9 @@ class App(tk.Frame):
                 self.resultText.insert(tk.INSERT, "No feasible solution")
                 return
             else:
-                best = math.inf
-                mean = 0
-                tests = int(self.entry.get())
-                if tests < 1:
-                    tests = 1
-                for x in range(tests):
-                    gg = cycle_canceling(dcp(self.graph))
-                    best = min(gg.exec_time, best)
-                    mean += gg.exec_time
-                mean *= 1000 / tests
-                result = result + "Time statistics on " + str(tests) + " execution"
-                if tests > 1:
-                    result = result + "s"
-                result = result + "\nBest time (milliseconds)= " + str(
-                    best * 1000) + "\n" + "Mean (milliseconds)= " + str(mean) + "\n"
+                result = result + test(int(self.entry.get()), self.graph, cycle_canceling)
                 self.resultText.insert(tk.INSERT, result)
-
-                (paths, cycles)= flow_decomposition(g)
+                (paths, cycles) = flow_decomposition(g)
                 result = print_result4(paths, cycles)
                 self.resultText.insert(tk.INSERT, result)
         else:

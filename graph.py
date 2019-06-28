@@ -84,6 +84,7 @@ class Graph:
         self.t: Node = None
         self.negative = False
         self.neg_cycle = False
+        self.nCycle = self.t
         self.not_feasible = False
         self.mcf_error = False
         self.C = -math.inf
@@ -108,6 +109,8 @@ class Graph:
             n.predecessor = None
             n.pred_arc = None
         self.s.d = 0
+        self.nCycle = self.t
+        self.neg_cycle = False
         self.order()
 
     def previously(self):
