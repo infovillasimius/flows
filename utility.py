@@ -2,6 +2,7 @@ from graph import *
 from copy import deepcopy as dcp
 
 
+# Load Graph from a file
 def file_load(file):
     my_graph = Graph()
     try:
@@ -49,6 +50,7 @@ def file_load(file):
     return my_graph
 
 
+# Return results for Shortest Path Algorithms
 def print_result(g: Graph, algorithm):
     if g is None:
         return algorithm + " Algorithm\nNo result"
@@ -66,6 +68,7 @@ def print_result(g: Graph, algorithm):
     return result
 
 
+# Return results for Max Flow Algorithms
 def print_result2(g, algorithm_name):
     if g is None:
         return algorithm_name + " Algorithm\nNo result"
@@ -80,6 +83,7 @@ def print_result2(g, algorithm_name):
     return result
 
 
+# Return results for Successive Shortest Path Algorithm
 def print_result3(g: Graph, algorithm_name):
     if g is None:
         return algorithm_name + " Algorithm\nNo result"
@@ -87,10 +91,29 @@ def print_result3(g: Graph, algorithm_name):
     result += "\nNode Mass Balances b(i): " + str([a.value for a in g.node_list])
     result += "\nSuccessive paths: " + str(g.times) + "\nTotal cost: " + str(
         g.get_cost()) + "\nFlows Paths: " + str([(a.node_list[::-1], a.flow) for a in g.paths]) + "\n"
-    
     return result
 
 
+# Return results for Flow Decomposition Algorithm
+def print_result4(paths, cycles):
+    result = "\nFlow Decomposition Algorithm\nFlows Paths: " + str(
+        [(a.node_list, a.flow) for a in paths]) + "\nFlow Cycles: " + str(
+        [(a.node_list, a.flow) for a in cycles])
+    return result
+
+
+# Return results for Cycle canceling Algorithm
+def print_result5(g: Graph, algorithm_name):
+    if g is None:
+        return algorithm_name + " Algorithm\nNo result"
+    result = algorithm_name + " Algorithm"
+    result += "\nNode Mass Balances b(i): " + str([a.value for a in g.node_list])
+    result += "\nNumber of Cycles : " + str(g.times) + "\nTotal cost: " + str(
+        g.get_cost()) + "\nCanceled Cycles: " + str([(a.node_list, a.flow) for a in g.paths]) + "\n"
+    return result
+
+
+# Return initial node for "Flow Decomposition" Algorithm
 def get_initial_node(g: Graph):
     for n in g.node_list:
         in_flow = 0
@@ -105,6 +128,7 @@ def get_initial_node(g: Graph):
     return None
 
 
+# Depth First Search for "Flow Decomposition" Algorithm
 def depth_first_search(n: Node, g: Graph):
     g.previously()
     q = [n]
@@ -153,11 +177,10 @@ def depth_first_search(n: Node, g: Graph):
     return None
 
 
+# Flow Decomposition Algorithm
 def flow_decomposition(g: Graph):
-
     path_list = []
     cycle_list = []
-
     n = get_initial_node(g)
     while n is not None:
         w = depth_first_search(n, g)
@@ -165,31 +188,13 @@ def flow_decomposition(g: Graph):
             a.flow -= w.flow
         if w.cycle:
             cycle_list.append(w)
-
         else:
             path_list.append(w)
         n = get_initial_node(g)
     return path_list, cycle_list
 
 
-def print_result4(paths, cycles):
-    result = "\nFlow Decomposition Algorithm\nFlows Paths: " + str(
-        [(a.node_list, a.flow) for a in paths]) + "\nFlow Cycles: " + str(
-        [(a.node_list, a.flow) for a in cycles])
-    return result
-
-
-def print_result5(g: Graph, algo):
-    if g is None:
-        return algo + " Algorithm\nNo result"
-    result = algo + " Algorithm"
-    result += "\nNode Mass Balances b(i): " + str([a.value for a in g.node_list])
-    result += "\nNumber of Cycles : " + str(g.times) + "\nTotal cost: " + str(
-        g.get_cost()) + "\nCanceled Cycles: " + str([(a.node_list, a.flow) for a in g.paths]) + "\n"
-
-    return result
-
-
+# Execute statistic tests on the algorithm passed as argument
 def test(tests: int, g: Graph, algorithm):
     best = math.inf
     mean = 0
