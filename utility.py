@@ -115,7 +115,6 @@ def print_result3(g: Graph, algorithm_name):
     if g is None:
         return result + "\nNo result"
     if g.neg_cycle:
-        print(g.node_list)
         path = print_neg_cycle(g)
         result = result + "Negative Cycle detected!\n" + str(path.node_list) + ": Total cost = " + str(path.cost)
         return result
