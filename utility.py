@@ -85,9 +85,12 @@ def print_result2(g, algorithm_name):
 
 # Return results for Successive Shortest Path Algorithm
 def print_result3(g: Graph, algorithm_name):
-    if g is None:
-        return algorithm_name + " Algorithm\nNo result"
     result = algorithm_name + " Algorithm"
+    if g is None:
+        return result + "\nNo result"
+    if g.neg_cycle:
+        return result + "\nNegative cycle detected\n\n"
+
     result += "\nNode Mass Balances b(i): " + str([a.value for a in g.node_list])
     result += "\nSuccessive paths: " + str(g.times) + "\nTotal cost: " + str(
         g.get_cost()) + "\nFlows Paths: " + str([(a.node_list[::-1], a.flow) for a in g.paths]) + "\n"
@@ -104,9 +107,11 @@ def print_result4(paths, cycles):
 
 # Return results for Cycle canceling Algorithm
 def print_result5(g: Graph, algorithm_name):
-    if g is None:
-        return algorithm_name + " Algorithm\nNo result"
     result = algorithm_name + " Algorithm"
+    if g is None:
+        return result + "\nNo result"
+    if g.neg_cycle:
+        return result + "\nNegative cycle detected"
     result += "\nNode Mass Balances b(i): " + str([a.value for a in g.node_list])
     result += "\nNumber of Cycles : " + str(g.times) + "\nTotal cost: " + str(
         g.get_cost()) + "\nCanceled Cycles: " + str([(a.node_list, a.flow) for a in g.paths]) + "\n"

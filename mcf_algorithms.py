@@ -1,5 +1,6 @@
 from timeit import default_timer as timer
 from max_flow_algorithms import labeling
+from spp_algorithms import label_correcting
 from copy import deepcopy as dcp
 from graph import *
 
@@ -173,6 +174,7 @@ def successive_shortest_path(g: Graph):
     g.node_list.pop(0)
     g.node_list.pop(-1)
     g.number()
+    g.neg_cycle = fgraph.neg_cycle
     return g
 
 
@@ -216,6 +218,9 @@ def flow_neg_cycle(n, g):
 
 
 def cycle_canceling(g: Graph):
+    test_for_neg_cycle = label_correcting(dcp(g))
+    if test_for_neg_cycle.neg_cycle:
+        return test_for_neg_cycle
     g.reset_flows()
     g.paths.clear()
     times = 0

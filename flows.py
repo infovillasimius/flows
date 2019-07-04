@@ -135,6 +135,9 @@ class App(tk.Frame):
         if self.graph is not None:
             g = label_correcting(dcp(self.graph))
             result = print_result(g, "Label Correcting")
+            if g.neg_cycle:
+                self.resultText.insert(tk.INSERT, result)
+                return
             result = result + test(int(self.entry.get()), self.graph, label_correcting)
             self.resultText.insert(tk.INSERT, result)
         else:
@@ -145,6 +148,9 @@ class App(tk.Frame):
         if self.graph is not None:
             g = fifo_label_correcting(dcp(self.graph))
             result = print_result(g, "FIFO Label Correcting")
+            if g.neg_cycle:
+                self.resultText.insert(tk.INSERT, result)
+                return
             result = result + test(int(self.entry.get()), self.graph, fifo_label_correcting)
             self.resultText.insert(tk.INSERT, result)
         else:
@@ -155,6 +161,9 @@ class App(tk.Frame):
         if self.graph is not None:
             g = deque_label_correcting(dcp(self.graph))
             result = print_result(g, "Deque Label Correcting")
+            if g.neg_cycle:
+                self.resultText.insert(tk.INSERT, result)
+                return
             result = result + test(int(self.entry.get()), self.graph, deque_label_correcting)
             self.resultText.insert(tk.INSERT, result)
         else:
@@ -180,7 +189,6 @@ class App(tk.Frame):
             result = print_result2(g, "MF PreFlow Push")
             result = result + test(int(self.entry.get()), self.graph, pre_flow_push)
             self.resultText.insert(tk.INSERT, result)
-
             (paths, cycles) = flow_decomposition(g)
             result = print_result4(paths, cycles)
             self.resultText.insert(tk.INSERT, result)
@@ -197,6 +205,9 @@ class App(tk.Frame):
                 return
             elif g.not_feasible:
                 self.resultText.insert(tk.INSERT, "No feasible solution")
+                return
+            elif g.neg_cycle:
+                self.resultText.insert(tk.INSERT, result)
                 return
             else:
                 result = result + test(int(self.entry.get()), self.graph, successive_shortest_path)
@@ -217,6 +228,9 @@ class App(tk.Frame):
                 return
             elif g.not_feasible:
                 self.resultText.insert(tk.INSERT, "No feasible solution")
+                return
+            elif g.neg_cycle:
+                self.resultText.insert(tk.INSERT, result)
                 return
             else:
                 result = result + test(int(self.entry.get()), self.graph, cycle_canceling)
