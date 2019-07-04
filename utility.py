@@ -50,6 +50,7 @@ def file_load(file):
     return my_graph
 
 
+# Return negative cycle found by label correcting algorithms
 def print_neg_cycle(g: Graph):
     g.previously()
     path = Path()

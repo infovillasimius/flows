@@ -9,8 +9,8 @@ class Node:
         self.d = math.inf
         self.inList: List[Arc] = []
         self.outList: List[Arc] = []
-        self.predecessor = None
-        self.pred_arc = None
+        self.predecessor: Node = None
+        self.pred_arc: Arc = None
         self.num: int = None
         self.labeled = False
         self.contained = False
@@ -22,7 +22,6 @@ class Node:
         self.active_forward_arc = 0
         self.active_reverse_arc = 0
 
-
     def __str__(self):
         return self.num.__str__()
 
@@ -31,7 +30,6 @@ class Node:
 
 
 class Arc:
-
     def __init__(self, tail: Node, head: Node, cost=0, capacity=math.inf, flow=0):
         self.cost = cost
         self.capacity = capacity
@@ -73,7 +71,6 @@ class Path:
 
 
 class Graph:
-
     def __init__(self):
         self.node_list: List[Node] = []
         self.arc_list: List[Arc] = []
@@ -132,22 +129,22 @@ class Graph:
         for n in self.node_list:
             n.in_degree = 0
             n.order = 0
-            next_n = 0
+        next_n = 0
         for a in self.arc_list:
             a.head.in_degree += 1
-        zero_indegree_list = []
+        zero_in_degree_list = []
         for n in self.node_list:
             if n.in_degree == 0:
-                zero_indegree_list.append(n)
-        while len(zero_indegree_list) > 0:
-            n = zero_indegree_list.pop(0)
+                zero_in_degree_list.append(n)
+        while len(zero_in_degree_list) > 0:
+            n = zero_in_degree_list.pop(0)
             next_n += 1
             n.order = next_n
             self.ordered.append(n)
             for a in n.outList:
                 a.head.in_degree -= 1
                 if a.head.in_degree == 0:
-                    zero_indegree_list.append(a.head)
+                    zero_in_degree_list.append(a.head)
         self.is_ordered = next_n >= len(self.node_list)
 
     def set_residual(self):
