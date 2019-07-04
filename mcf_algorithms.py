@@ -1,6 +1,6 @@
 from timeit import default_timer as timer
 from max_flow_algorithms import labeling
-from spp_algorithms import label_correcting
+from spp_algorithms import fifo_label_correcting
 from copy import deepcopy as dcp
 from graph import *
 
@@ -139,6 +139,9 @@ def new_path_search(fgraph: Graph):
 
 
 def successive_shortest_path(g: Graph):
+    test_for_neg_cycle = fifo_label_correcting(dcp(g))
+    if test_for_neg_cycle.neg_cycle:
+        return test_for_neg_cycle
     g.reset_flows()
     g.paths.clear()
     times = 0
@@ -218,21 +221,21 @@ def flow_neg_cycle(n, g):
 
 
 def cycle_canceling(g: Graph):
-    test_for_neg_cycle = label_correcting(dcp(g))
+    test_for_neg_cycle = fifo_label_correcting(dcp(g))
     if test_for_neg_cycle.neg_cycle:
         return test_for_neg_cycle
     g.reset_flows()
     g.paths.clear()
     times = 0
-    fgraph = get_graph_for_feasible_solution(g)
-    if fgraph is None:
+    f_graph = get_graph_for_feasible_solution(g)
+    if f_graph is None:
         g.mcf_error = True
         return g
-    fgraph = labeling(fgraph)
-    if not is_feasible(fgraph):
+    f_graph = labeling(f_graph)
+    if not is_feasible(f_graph):
         g.not_feasible = True
         return g
-    g = fgraph
+    g = f_graph
     for a in g.node_list[0].outList:
         g.arc_list.remove(a)
         a.head.inList.remove(a)

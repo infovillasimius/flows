@@ -50,12 +50,38 @@ def file_load(file):
     return my_graph
 
 
+def print_neg_cycle(g: Graph):
+    g.previously()
+    path = Path()
+    path.cycle = True
+    n = g.nCycle
+    while n.previously is not True:
+        n.previously = True
+        n = n.predecessor
+    g.previously()
+    while n.previously is not True:
+        path.arc_list.append(n.pred_arc)
+        path.node_list.append(n)
+        n.previously = True
+        n = n.predecessor
+    path.node_list.append(n)
+    path.node_list.reverse()
+    path.arc_list.reverse()
+    path.cost = 0
+    for arc in path.arc_list:
+        path.cost += arc.cost
+    return path
+
+
 # Return results for Shortest Path Algorithms
 def print_result(g: Graph, algorithm):
+    result = algorithm + " Algorithm\n"
     if g is None:
-        return algorithm + " Algorithm\nNo result"
+        return result + "No result"
     if g.neg_cycle:
-        return algorithm + " Algorithm\nNegative Cycle detected!\n"
+        path = print_neg_cycle(g)
+        result = result + "Negative Cycle detected!\n" + str(path.node_list) + ": Total cost = " + str(path.cost)
+        return result
     n = g.t
     cost = n.d
     path = []
@@ -64,7 +90,7 @@ def print_result(g: Graph, algorithm):
         n = n.predecessor
     path.append(n)
     path.reverse()
-    result = algorithm + " Algorithm\nSolution nodes = " + str(path) + "\n" + "Total cost = " + str(cost) + "\n"
+    result = result + "Solution nodes = " + str(path) + "\n" + "Total cost = " + str(cost) + "\n"
     return result
 
 
@@ -85,11 +111,14 @@ def print_result2(g, algorithm_name):
 
 # Return results for Successive Shortest Path Algorithm
 def print_result3(g: Graph, algorithm_name):
-    result = algorithm_name + " Algorithm"
+    result = algorithm_name + " Algorithm\n"
     if g is None:
         return result + "\nNo result"
     if g.neg_cycle:
-        return result + "\nNegative cycle detected\n\n"
+        print(g.node_list)
+        path = print_neg_cycle(g)
+        result = result + "Negative Cycle detected!\n" + str(path.node_list) + ": Total cost = " + str(path.cost)
+        return result
 
     result += "\nNode Mass Balances b(i): " + str([a.value for a in g.node_list])
     result += "\nSuccessive paths: " + str(g.times) + "\nTotal cost: " + str(
@@ -107,11 +136,14 @@ def print_result4(paths, cycles):
 
 # Return results for Cycle canceling Algorithm
 def print_result5(g: Graph, algorithm_name):
-    result = algorithm_name + " Algorithm"
+    result = algorithm_name + " Algorithm\n"
     if g is None:
         return result + "\nNo result"
     if g.neg_cycle:
-        return result + "\nNegative cycle detected"
+        path = print_neg_cycle(g)
+        result = result + "Negative Cycle detected!\n" + str(path.node_list) + ": Total cost = " + str(path.cost)
+        return result
+
     result += "\nNode Mass Balances b(i): " + str([a.value for a in g.node_list])
     result += "\nNumber of Cycles : " + str(g.times) + "\nTotal cost: " + str(
         g.get_cost()) + "\nCanceled Cycles: " + str([(a.node_list, a.flow) for a in g.paths]) + "\n"

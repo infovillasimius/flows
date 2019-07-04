@@ -104,6 +104,7 @@ def label_correcting(g: Graph):
             if a.head.d > dist:
                 a.head.d = dist
                 a.head.predecessor = a.tail
+                a.head.pred_arc = a
                 opt_cond = False
                 n = a.head
         if dist < min_dist:
@@ -131,6 +132,7 @@ def fifo_label_correcting(g):
             if a.head.d > dist:
                 a.head.d = dist
                 a.head.predecessor = a.tail
+                a.head.pred_arc = a
                 if not a.head.contained:
                     q.append(a.head)
                     a.head.contained = True
@@ -159,6 +161,7 @@ def deque_label_correcting(g):
             if a.head.d > dist:
                 a.head.d = dist
                 a.head.predecessor = a.tail
+                a.head.pred_arc = a
                 if not a.head.contained:
                     if a.head.previously:
                         q.insert(0,a.head)
