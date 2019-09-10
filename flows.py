@@ -64,6 +64,8 @@ class App(tk.Frame):
         self.mcf_successive_shortest_path_Button.grid(row=1, column=3, sticky=tk.N + tk.S + tk.E + tk.W)
         self.mcf_cycle_canceling_Button = tk.Button(self, text='M.C.F. Cycle Canceling', command=self.exec_mcf_cycle_canceling)
         self.mcf_cycle_canceling_Button.grid(row=1, column=4, sticky=tk.N + tk.S + tk.E + tk.W)
+        self.neg_check_spp_Button = tk.Button(self, text='Neg. Cycle SPP', command=self.exec_neg_check_spp)
+        self.neg_check_spp_Button.grid(row=1, column=5, sticky=tk.N + tk.S + tk.E + tk.W)
         icon = tk.PhotoImage(file="Logo_UniCa_64.png")
         top.tk.call("wm", "iconphoto", top._w, icon)
 
@@ -240,6 +242,17 @@ class App(tk.Frame):
                 self.resultText.insert(tk.INSERT, result)
         else:
             self.resultText.insert(tk.INSERT, "Graph not loaded")
+
+    def exec_neg_check_spp(self):
+        self.resultText.delete('1.0', tk.END)
+        if self.graph is not None:
+            g = neg_check_label_correcting(dcp(self.graph))
+            result = neg_check_print_result(g, "Neg. Check Label Correcting")
+            result = result + test(int(self.entry.get()), self.graph, neg_check_label_correcting)
+            self.resultText.insert(tk.INSERT, result)
+        else:
+            self.resultText.insert(tk.INSERT, "Graph not loaded")
+
 
 
 app = App()

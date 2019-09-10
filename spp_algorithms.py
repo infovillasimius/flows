@@ -164,7 +164,7 @@ def deque_label_correcting(g):
                 a.head.pred_arc = a
                 if not a.head.contained:
                     if a.head.previously:
-                        q.insert(0,a.head)
+                        q.insert(0, a.head)
                     else:
                         q.append(a.head)
                     a.head.contained = True
@@ -178,3 +178,35 @@ def deque_label_correcting(g):
     return g
 
 
+def neg_check(n: Node, p: Node, s: Node):
+    if n == p or n == s:
+        return True
+    i = p
+    while i is not s:
+        if n == i:
+            return True
+        i = i.predecessor
+    return False
+
+
+def neg_check_label_correcting(g: Graph):
+    g.initialize()
+    opt_cond = False
+    start_time = timer()
+
+    while not opt_cond:
+        opt_cond = True
+        for a in g.arc_list:
+            dist = a.tail.d + a.cost
+            neg = neg_check(a.head, a.tail, g.s)
+            if neg:
+                g.neg_cycle=True
+            elif a.head.d > dist:
+                a.head.d = dist
+                a.head.predecessor = a.tail
+                a.head.pred_arc = a
+                opt_cond = False
+                n = a.head
+
+    g.exec_time = timer() - start_time
+    return g

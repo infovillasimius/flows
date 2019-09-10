@@ -3,6 +3,9 @@ from copy import deepcopy as dcp
 
 
 # Load Graph from a file
+from spp_algorithms import fifo_label_correcting
+
+
 def file_load(file):
     my_graph = Graph()
     try:
@@ -81,8 +84,30 @@ def print_result(g: Graph, algorithm):
         return result + "No result"
     if g.neg_cycle:
         path = print_neg_cycle(g)
-        result = result + "Negative Cycle detected!\n" + str(path.node_list) + ": Total cost = " + str(path.cost)
+        result = result + "Negative Cycle detected!\n" + str(path.node_list) + ": Total cost = " + str(path.cost) + '\n'
         return result
+    n = g.t
+    cost = n.d
+    path = []
+    while n != g.s:
+        path.append(n)
+        n = n.predecessor
+    path.append(n)
+    path.reverse()
+    result = result + "Solution nodes = " + str(path) + "\n" + "Total cost = " + str(cost) + "\n"
+    return result
+
+
+# Return results for Shortest Path Neg Check Algorithms
+def neg_check_print_result(g: Graph, algorithm):
+    result = algorithm + " Algorithm\n"
+    if g is None:
+        return result + "No result"
+    if g.neg_cycle:
+        g1 = fifo_label_correcting(dcp(g))
+        path = print_neg_cycle(g1)
+        result = result + "Negative Cycle detected!\n" + str(path.node_list) + ": Total cost = " + str(path.cost) + '\n\n'
+
     n = g.t
     cost = n.d
     path = []

@@ -28,6 +28,13 @@ class Node:
     def __repr__(self):
         return self.num.__str__()
 
+    def __eq__(self, other):
+        if not isinstance(other, Node):
+            # don't attempt to compare against unrelated types
+            return NotImplemented
+
+        return self.num == other.num
+
 
 class Arc:
     def __init__(self, tail: Node, head: Node, cost=0, capacity=math.inf, flow=0):
