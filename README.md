@@ -16,6 +16,7 @@ Label Correcting Algorithms:
 1. Generic Label correcting
 2. F.I.F.O. L.C.
 3. Deque L.C.
+4. Negative Cycle immune Label Correcting
 
 
 Max Flow Algorithms:
