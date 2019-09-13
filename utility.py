@@ -105,9 +105,9 @@ def neg_check_print_result(g: Graph, algorithm):
         return result + "No result"
     if g.neg_cycle:
         g1 = fifo_label_correcting(dcp(g))
-        path = print_neg_cycle(g1)
-        result = result + "Negative Cycle detected!\n" + str(path.node_list) + ": Total cost = " + str(path.cost) + '\n\n'
-
+        if g1.neg_cycle:
+            path = print_neg_cycle(g1)
+            result = result + "Negative Cycle detected!\n" + str(path.node_list) + ": Total cost = " + str(path.cost) + '\n\n'
     n = g.t
     cost = n.d
     path = []
